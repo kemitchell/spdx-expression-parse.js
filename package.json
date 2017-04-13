@@ -10,6 +10,8 @@
   ],
   "devDependencies": {
     "defence-cli": "^1.0.1",
+    "istanbul": "^0.4.5",
+    "istanbul-coveralls": "^1.0.3",
     "jison": "^0.4.15",
     "replace-require-self": "^1.0.0",
     "spdx-exceptions": "^1.0.4",
@@ -31,7 +33,8 @@
   "scripts": {
     "lint": "standard",
     "prepublish": "node generate-parser.js > parser.js",
-    "pretest": "npm run prepublish",
-    "test": "defence -i javascript README.md | replace-require-self | node"
+    "pretest": "npm run prepublish ; defence -i javascript README.md | replace-require-self > test.js",
+    "test": "istanbul cover test.js ; if [ ! -z $CI ]; then istanbul-coveralls ; fi",
+    "posttest": "rm test.js"
   }
 }
