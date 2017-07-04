@@ -67,13 +67,22 @@ module.exports = function (tokens) {
 
   function parseLicense () {
     var t = token()
+    var node, exception
     if (t && t.type === 'LICENSE') {
       next()
-      var node = {license: t.string}
-      if (parseOperator('+')) {
-        node.plus = true
+      node = {license: t.string}
+      exception = parseWith()
+      if (exception) {
+        node.exception = exception
       }
-      var exception = parseWith()
+      return node
+    } else if (t && t.type === 'LICENSE-PLUS') {
+      next()
+      node = {
+        license: t.string.slice(0, -1),
+        plus: true
+      }
+      exception = parseWith()
       if (exception) {
         node.exception = exception
       }

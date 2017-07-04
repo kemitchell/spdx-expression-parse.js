@@ -35,7 +35,13 @@ it('allows many spaces', function () {
 it('forbids spaces between a license-id and a following `+`', function () {
   assert.throws(
     function () { p('MIT +') },
-    /Space before `\+`/
+    /Expected idstringplus at offset 4/
+  )
+})
+
+it('throws an error for invalid exception', function () {
+  assert.throws(
+    function () { p('MIT WITH Nonexistent-Exception') }
   )
 })
 

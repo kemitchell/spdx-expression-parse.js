@@ -35,18 +35,13 @@ module.exports = function (source) {
 
   function operator () {
     var string
-    var possibilities = ['WITH', 'AND', 'OR', '(', ')', ':', '+']
+    var possibilities = ['WITH', 'AND', 'OR', '(', ')', ':']
     for (var i = 0; i < possibilities.length; i++) {
       string = read(possibilities[i])
       if (string) {
         break
       }
     }
-
-    if (string === '+' && index > 1 && source[index - 2] === ' ') {
-      throw new Error('Space before `+`')
-    }
-
     return string && {
       type: 'OPERATOR',
       string: string
@@ -55,6 +50,10 @@ module.exports = function (source) {
 
   function idstring () {
     return read(/[A-Za-z0-9-.]+/)
+  }
+
+  function idstringplus () {
+    return read(/[A-Za-z0-9-.]+\+?/)
   }
 
   function expectIdstring () {
@@ -81,11 +80,20 @@ module.exports = function (source) {
 
   function identifier () {
     var begin = index
-    var string = idstring()
+    var string = idstringplus()
+
+    if (!string) {
+      throw new Error('Expected idstringplus at offset ' + index)
+    }
 
     if (licenses.indexOf(string) !== -1) {
       return {
         type: 'LICENSE',
+        string: string
+      }
+    } else if (licenses.indexOf(string.slice(0, -1)) !== -1) {
+      return {
+        type: 'LICENSE-PLUS',
         string: string
       }
     } else if (exceptions.indexOf(string) !== -1) {
