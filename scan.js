@@ -35,16 +35,12 @@ module.exports = function (source) {
 
   function operator () {
     var string
-    var possibilities = ['WITH', 'AND', 'OR', '(', ')', ':', '+']
+    var possibilities = ['WITH', 'AND', 'OR', '(', ')', ':']
     for (var i = 0; i < possibilities.length; i++) {
       string = read(possibilities[i])
       if (string) {
         break
       }
-    }
-
-    if (string === '+' && index > 1 && source[index - 2] === ' ') {
-      throw new Error('Space before `+`')
     }
 
     return string && {
@@ -85,7 +81,7 @@ module.exports = function (source) {
 
     if (licenses.indexOf(string) !== -1) {
       return {
-        type: 'LICENSE',
+        type: read('+') ? 'LICENSE-PLUS' : 'LICENSE',
         string: string
       }
     } else if (exceptions.indexOf(string) !== -1) {

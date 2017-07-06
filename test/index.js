@@ -35,7 +35,7 @@ it('allows many spaces', function () {
 it('forbids spaces between a license-id and a following `+`', function () {
   assert.throws(
     function () { p('MIT +') },
-    /Space before `\+`/
+    /Unexpected `\+` at offset 4/
   )
 })
 
